@@ -44,6 +44,13 @@
 		<Linker>
 			<Add directory="D:/Programmation/SFML-2.1/lib" />
 		</Linker>
+		<Unit filename="README.md" />
+		<Unit filename="Unit.cpp" />
+		<Unit filename="Unit.hpp" />
+		<Unit filename="Vector.cpp" />
+		<Unit filename="Vector.hpp" />
+		<Unit filename="Vehicule.cpp" />
+		<Unit filename="Vehicule.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
