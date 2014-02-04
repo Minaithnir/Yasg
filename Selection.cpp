@@ -78,6 +78,7 @@ void Selection::draw(sf::RenderWindow& screen)
 void Selection::giveDest(Vector dest, float offset)
 {
     int side = sqrt(m_size);
+    side = side*side < m_size ? side+1 : side;
     Vector actualDest;
     actualDest.x = dest.x - (side*offset)/2;
     actualDest.y = dest.y - (side*offset)/2;

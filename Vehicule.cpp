@@ -93,7 +93,7 @@ Vector Vehicule::wander()
 /**
     cherche à atteindre la cible
 */
-Vector Vehicule::seek(const Vector& target, const float& offset)
+Vector Vehicule::seek(const Vector& target, const float& offset, bool approx)
 {
     Vector _target = target - m_position;
     _target.setLengh(_target.norme()-offset);
@@ -102,7 +102,8 @@ Vector Vehicule::seek(const Vector& target, const float& offset)
     Vector desiredVelocity, steering;
 
     desiredVelocity = _target - m_position;
-    if(desiredVelocity.norme() > APPROX_ARRIVAL)
+    float approxDist = approx ? 20*APPROX_ARRIVAL : APPROX_ARRIVAL;
+    if(desiredVelocity.norme() > approxDist)
     {
         if(m_arrival)
         {

@@ -21,6 +21,8 @@ int main()
     Selection select;
     select.setSelectable(&units);
 
+    Selection group[10];
+
     sf::Clock clock;
     float frameTime;
 
@@ -41,7 +43,7 @@ int main()
                     select.startSelect(event.mouseButton.x, event.mouseButton.y);
                     break;
                 case sf::Mouse::Right :
-                    select.giveDest(Vector(event.mouseButton.x, event.mouseButton.y), 30);
+                    select.giveDest(Vector(event.mouseButton.x, event.mouseButton.y), 35);
                     break;
                 default :
                     break;
@@ -66,6 +68,66 @@ int main()
                         units[i].setPosition(Vector(rand()%WIDTH, rand()%HEIGHT));
                         units[i].idle();
                     }
+                    break;
+                case sf::Keyboard::Num0 :
+                    if(event.key.control)
+                        group[0] = select;
+                    else
+                        select = group[0];
+                    break;
+                case sf::Keyboard::Num1 :
+                    if(event.key.control)
+                        group[1] = select;
+                    else
+                        select = group[1];
+                    break;
+                case sf::Keyboard::Num2 :
+                    if(event.key.control)
+                        group[2] = select;
+                    else
+                        select = group[2];
+                    break;
+                case sf::Keyboard::Num3 :
+                    if(event.key.control)
+                        group[3] = select;
+                    else
+                        select = group[3];
+                    break;
+                case sf::Keyboard::Num4 :
+                    if(event.key.control)
+                        group[4] = select;
+                    else
+                        select = group[4];
+                    break;
+                case sf::Keyboard::Num5 :
+                    if(event.key.control)
+                        group[5] = select;
+                    else
+                        select = group[5];
+                    break;
+                case sf::Keyboard::Num6 :
+                    if(event.key.control)
+                        group[6] = select;
+                    else
+                        select = group[6];
+                    break;
+                case sf::Keyboard::Num7 :
+                    if(event.key.control)
+                        group[7] = select;
+                    else
+                        select = group[7];
+                    break;
+                case sf::Keyboard::Num8 :
+                    if(event.key.control)
+                        group[8] = select;
+                    else
+                        select = group[8];
+                    break;
+                case sf::Keyboard::Num9 :
+                    if(event.key.control)
+                        group[9] = select;
+                    else
+                        select = group[9];
                     break;
                 default :
                     break;

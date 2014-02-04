@@ -45,6 +45,8 @@
 			<Add directory="D:/Programmation/SFML-2.1/lib" />
 		</Linker>
 		<Unit filename="README.md" />
+		<Unit filename="Selection.cpp" />
+		<Unit filename="Selection.hpp" />
 		<Unit filename="Unit.cpp" />
 		<Unit filename="Unit.hpp" />
 		<Unit filename="Vector.cpp" />

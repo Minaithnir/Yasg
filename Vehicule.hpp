@@ -69,7 +69,7 @@ class Vehicule
 
         Vector wander();
 
-        Vector seek(const Vector& target, const float& offset = 0);
+        Vector seek(const Vector& target, const float& offset = 0, bool approx = false);
         Vector flee(const Vector& target);
 
         Vector pursue(Vehicule& target, const float& offset = 0);

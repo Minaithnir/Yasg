@@ -21,6 +21,8 @@ void Unit::update(const float& frameTime, std::vector<Unit>& others)
         othersV.push_back(&(*it));
     }
 
+    bool approx = false;
+
     m_steering = unallignedCollisionAvoidance(othersV);
     if(m_steering==Vector(0,0))
     {
@@ -29,19 +31,22 @@ void Unit::update(const float& frameTime, std::vector<Unit>& others)
             switch(m_commands.front())
             {
             case GO :
-                m_steering = seek(m_target);
-                if(Vector(m_target-m_position).norme()<=APPROX_ARRIVAL)
+                approx = false;
+                //Marge de manoeuvre dans le cas où plusieurs unité vont au même end
+                for(std::vector<Unit>::iterator it=others.begin(); it!=others.end() && !approx; it++)
                 {
-                    m_commands.pop_front();
-                    m_commands.push_back(IDLE);
+                    if(&(*it)!=this && Vector(m_target - it->m_target).norme() < 2*m_radius)
+                    {
+                        approx = true;
+                    }
                 }
+                m_steering = seek(m_target, 0, approx);
                 break;
             case IDLE :
                 m_steering = -m_velocity;
                 if(m_velocity.norme()<=0.0f)
                 {
                     m_commands.pop_front();
-                    std::cout << "pop" << std::endl;
                 }
                 break;
             default:
