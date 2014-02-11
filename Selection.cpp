@@ -67,9 +67,10 @@ void Selection::draw(sf::RenderWindow& screen)
 
     if(m_select)
     {
-        m_selectShape[1].position = sf::Vector2f(sf::Mouse::getPosition(screen).x, m_selectRect.top);
-        m_selectShape[2].position = sf::Vector2f(sf::Mouse::getPosition(screen).x, sf::Mouse::getPosition(screen).y);
-        m_selectShape[3].position = sf::Vector2f(m_selectRect.left, sf::Mouse::getPosition(screen).y);
+        sf::Vector2f wPos = screen.mapPixelToCoords(sf::Mouse::getPosition(screen));
+        m_selectShape[1].position = sf::Vector2f(wPos.x, m_selectRect.top);
+        m_selectShape[2].position = sf::Vector2f(wPos.x, wPos.y);
+        m_selectShape[3].position = sf::Vector2f(m_selectRect.left, wPos.y);
 
         screen.draw(m_selectShape);
     }

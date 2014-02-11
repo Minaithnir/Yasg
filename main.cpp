@@ -3,13 +3,13 @@
 #include "Unit.hpp"
 #include "Selection.hpp"
 
-#define WIDTH 1900
-#define HEIGHT 1000
+#define WIDTH 1280
+#define HEIGHT 696
 #define DEMO_UNIT_COUNT 500
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1900,1000), "Yet another strategy game");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Yet another strategy game");
 
     std::vector<Unit> units;
     for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
@@ -20,11 +20,13 @@ int main()
 
     Selection select;
     select.setSelectable(&units);
+    sf::View camera(sf::FloatRect(0,0,window.getSize().x, window.getSize().y));
 
     Selection group[10];
 
     sf::Clock clock;
     float frameTime;
+    sf::Vector2f wPos;
 
     while (window.isOpen())
     {
@@ -36,14 +38,19 @@ int main()
             case sf::Event::Closed :
                 window.close();
                 break;
+            case sf::Event::Resized :
+                camera.setSize(event.size.width, event.size.height);
+                break;
             case sf::Event::MouseButtonPressed :
                 switch(event.mouseButton.button)
                 {
                 case sf::Mouse::Left :
-                    select.startSelect(event.mouseButton.x, event.mouseButton.y);
+                    wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    select.startSelect(wPos.x, wPos.y);
                     break;
                 case sf::Mouse::Right :
-                    select.giveDest(Vector(event.mouseButton.x, event.mouseButton.y), 35);
+                    wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    select.giveDest(Vector(wPos.x, wPos.y), 25);
                     break;
                 default :
                     break;
@@ -53,7 +60,8 @@ int main()
                 switch(event.mouseButton.button)
                 {
                 case sf::Mouse::Left :
-                    select.endSelect(event.mouseButton.x, event.mouseButton.y);
+                    wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                    select.endSelect(wPos.x, wPos.y);
                     break;
                 default :
                     break;
@@ -141,6 +149,22 @@ int main()
         frameTime = clock.getElapsedTime().asSeconds();
         clock.restart();
 
+        //update view from mouse position
+        sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+        sf::Vector2f newPos = camera.getCenter();
+        if(localPosition.x < 20)
+            newPos.x -= 100*frameTime;
+        else if(localPosition.x > (window.getSize().x)-20)
+            newPos.x += 100*frameTime;
+
+        if(localPosition.y < 20)
+            newPos.y -= 100*frameTime;
+        else if(localPosition.y > (window.getSize().y)-20)
+            newPos.y += 100*frameTime;
+
+        camera.setCenter(newPos);
+
+
         for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
         {
             units[i].update(frameTime, units);
@@ -152,6 +176,7 @@ int main()
         }
 
         window.clear(sf::Color::White);
+        window.setView(camera);
 
         select.draw(window);
 
