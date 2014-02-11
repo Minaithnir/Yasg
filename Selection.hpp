@@ -19,6 +19,8 @@ class Selection
 
         void giveDest(Vector dest, float offset=15);
 
+        Selection operator=(const Selection& other);
+
     protected:
         sf::FloatRect m_selectRect;
         bool m_select;

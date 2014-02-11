@@ -195,7 +195,7 @@ Vector Vehicule::unallignedCollisionAvoidance(std::vector<Vehicule*>& others)
             if(Vector(others[i]->getPosition()-m_position).norme() < 50.f)
             {
                 Vector futurDiff(others[i]->getFuturePosition(UCATIME) - getFuturePosition(UCATIME));
-                if(futurDiff.norme() < 1.5*m_radius)
+                if(futurDiff.norme() < 1.7*m_radius)
                 {
                     if(futurDiff.norme()>m_radius)
                         futurDiff.setLengh(futurDiff.norme()-m_radius);

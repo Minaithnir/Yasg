@@ -57,6 +57,17 @@ void Selection::endSelect(float x, float y)
     m_select = false;
 }
 
+Selection Selection::operator=(const Selection& other)
+{
+    m_selection.clear();
+    for(std::list<Unit*>::const_iterator it=other.m_selection.begin(); it!=other.m_selection.end(); it++)
+    {
+        m_selection.push_back((*it));
+    }
+
+    return *this;
+}
+
 void Selection::draw(sf::RenderWindow& screen)
 {
     for(std::list<Unit*>::iterator it=m_selection.begin(); it!=m_selection.end(); it++)

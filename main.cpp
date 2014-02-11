@@ -7,9 +7,13 @@
 #define HEIGHT 696
 #define DEMO_UNIT_COUNT 500
 
+#define SCROLL_RANGE 50
+#define SCROLL_SPEED 200
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Yet another strategy game");
+    bool pause = false;
 
     std::vector<Unit> units;
     for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
@@ -40,6 +44,12 @@ int main()
                 break;
             case sf::Event::Resized :
                 camera.setSize(event.size.width, event.size.height);
+                break;
+            case sf::Event::LostFocus :
+                pause = true;
+                break;
+            case sf::Event::GainedFocus :
+                pause = false;
                 break;
             case sf::Event::MouseButtonPressed :
                 switch(event.mouseButton.button)
@@ -150,30 +160,37 @@ int main()
         clock.restart();
 
         //update view from mouse position
-        sf::Vector2i localPosition = sf::Mouse::getPosition(window);
-        sf::Vector2f newPos = camera.getCenter();
-        if(localPosition.x < 20)
-            newPos.x -= 100*frameTime;
-        else if(localPosition.x > (window.getSize().x)-20)
-            newPos.x += 100*frameTime;
-
-        if(localPosition.y < 20)
-            newPos.y -= 100*frameTime;
-        else if(localPosition.y > (window.getSize().y)-20)
-            newPos.y += 100*frameTime;
-
-        camera.setCenter(newPos);
-
-
-        for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
         {
-            units[i].update(frameTime, units);
+            sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+            sf::Vector2f newPos = camera.getCenter();
+            if(localPosition.x < SCROLL_RANGE)
+                newPos.x -= SCROLL_SPEED*frameTime;
+            else if(localPosition.x > (window.getSize().x)-SCROLL_RANGE)
+                newPos.x += SCROLL_SPEED*frameTime;
+
+            if(localPosition.y < SCROLL_RANGE)
+                newPos.y -= SCROLL_SPEED*frameTime;
+            else if(localPosition.y > (window.getSize().y)-SCROLL_RANGE)
+                newPos.y += SCROLL_SPEED*frameTime;
+
+            camera.setCenter(newPos);
         }
 
-        for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
+
+        if(!pause)
         {
-            units[i].updatePos(frameTime);
+            for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
+            {
+                units[i].update(frameTime, units);
+            }
+
+            for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
+            {
+                units[i].updatePos(frameTime);
+            }
         }
+
 
         window.clear(sf::Color::White);
         window.setView(camera);
