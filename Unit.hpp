@@ -4,6 +4,7 @@
 #include "Vehicule.hpp"
 #include <list>
 
+class QuadTree;
 
 class Unit : public Vehicule
 {
@@ -13,6 +14,8 @@ class Unit : public Vehicule
 
         virtual void update(const float& frameTime);
         virtual void update(const float& frameTime, std::vector<Unit>& others);
+        virtual void update(const float& frameTime, QuadTree& qTree);
+        virtual void update(const float& frameTime, std::list<Unit*>& others);
 
         void go(Vector dest);
         void idle();

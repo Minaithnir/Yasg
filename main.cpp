@@ -2,6 +2,9 @@
 
 #include "Unit.hpp"
 #include "Selection.hpp"
+#include "QuadTree.hpp"
+
+#include <iostream>
 
 #define WIDTH 1280
 #define HEIGHT 696
@@ -16,15 +19,16 @@ int main()
     bool pause = false;
 
     std::vector<Unit> units;
+    QuadTree qTree(sf::FloatRect(-2000,-2000,4000,4000));
     for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
     {
         units.push_back(Unit());
-        units.back().setPosition(Vector(rand()%WIDTH, rand()%HEIGHT));
+        units.back().setPosition(Vector(rand()%WIDTH - WIDTH/2, rand()%HEIGHT - HEIGHT/2));
     }
 
     Selection select;
     select.setSelectable(&units);
-    sf::View camera(sf::FloatRect(0,0,window.getSize().x, window.getSize().y));
+    sf::View camera(sf::FloatRect((int) -(window.getSize().x/2), (int) -(window.getSize().y/2),window.getSize().x, window.getSize().y));
 
     Selection group[10];
 
@@ -60,7 +64,7 @@ int main()
                     break;
                 case sf::Mouse::Right :
                     wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    select.giveDest(Vector(wPos.x, wPos.y), 25);
+                    select.giveDest(Vector(wPos.x, wPos.y), 3.5*UNIT_RADIUS);
                     break;
                 default :
                     break;
@@ -83,7 +87,7 @@ int main()
                 case sf::Keyboard::R :
                     for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
                     {
-                        units[i].setPosition(Vector(rand()%WIDTH, rand()%HEIGHT));
+                        units[i].setPosition(Vector(rand()%WIDTH - WIDTH/2, rand()%HEIGHT - HEIGHT/2));
                         units[i].idle();
                     }
                     break;
@@ -177,17 +181,18 @@ int main()
             camera.setCenter(newPos);
         }
 
-
         if(!pause)
         {
             for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
             {
-                units[i].update(frameTime, units);
+                units[i].update(frameTime, qTree);
             }
 
+            qTree.clear();
             for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
             {
                 units[i].updatePos(frameTime);
+                qTree.insert(&units[i]);
             }
         }
 
@@ -195,6 +200,7 @@ int main()
         window.clear(sf::Color::White);
         window.setView(camera);
 
+        qTree.display(window);
         select.draw(window);
 
         for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)

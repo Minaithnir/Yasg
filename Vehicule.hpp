@@ -1,6 +1,7 @@
 #ifndef UNIT_HPP
 #define UNIT_HPP
 
+#include "defines.hpp"
 #include "Vector.hpp"
 
 #include <vector>
@@ -12,10 +13,10 @@
 #define SLOW_DIST_FACTOR 2.5f // SLOW_DiST = SLOW_DIST_FACTOR * MAX_SPEED * DEFAULT_MASS
 #define APPROX_ARRIVAL 1.f
 
-#define RADIUS 10.f
+#define RADIUS UNIT_RADIUS
 #define AHEAD_CHECK (30.f*MAX_SPEED)
 
-#define UCATIME 4
+#define UCATIME 2
 
 class Vehicule
 {

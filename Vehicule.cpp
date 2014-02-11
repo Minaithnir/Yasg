@@ -13,9 +13,9 @@ Vehicule::Vehicule() :
     m_waypointIndex(0)
 {
     m_drawing.setPointCount(3);
-    m_drawing.setPoint(0, sf::Vector2f(-5,5));
-    m_drawing.setPoint(1, sf::Vector2f(-5,-5));
-    m_drawing.setPoint(2, sf::Vector2f(10,0));
+    m_drawing.setPoint(0, sf::Vector2f(-(RADIUS/2),(RADIUS/2)));
+    m_drawing.setPoint(1, sf::Vector2f(-(RADIUS/2),-(RADIUS/2)));
+    m_drawing.setPoint(2, sf::Vector2f(RADIUS,0));
     m_drawing.setFillColor(sf::Color::Black);
 }
 
@@ -102,7 +102,7 @@ Vector Vehicule::seek(const Vector& target, const float& offset, bool approx)
     Vector desiredVelocity, steering;
 
     desiredVelocity = _target - m_position;
-    float approxDist = approx ? 20*APPROX_ARRIVAL : APPROX_ARRIVAL;
+    float approxDist = approx ? UNIT_RADIUS*APPROX_ARRIVAL : APPROX_ARRIVAL;
     if(desiredVelocity.norme() > approxDist)
     {
         if(m_arrival)
@@ -185,22 +185,20 @@ Vector Vehicule::evade(Vehicule& target)
 Vector Vehicule::unallignedCollisionAvoidance(std::vector<Vehicule*>& others)
 {
     Vector steering(0,0);
-    int density = 0;
 
     for(unsigned int i=0; i<others.size(); i++)
     {
         if(others[i] != this)
         {
             /// si les deux unité sont assez proches
-            if(Vector(others[i]->getPosition()-m_position).norme() < 50.f)
+            if(Vector(others[i]->getPosition()-m_position).norme() < 5*m_radius)
             {
                 Vector futurDiff(others[i]->getFuturePosition(UCATIME) - getFuturePosition(UCATIME));
-                if(futurDiff.norme() < 1.7*m_radius)
+                if(futurDiff.norme() < 1.5*m_radius)
                 {
                     if(futurDiff.norme()>m_radius)
                         futurDiff.setLengh(futurDiff.norme()-m_radius);
                     steering -= futurDiff;
-                    density++;
                 }
             }
         }

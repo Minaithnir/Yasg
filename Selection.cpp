@@ -2,10 +2,10 @@
 
 Selection::Selection() : m_select(NULL)
 {
-    m_shapeIcon = sf::CircleShape(10,16);
+    m_shapeIcon = sf::CircleShape(UNIT_RADIUS,16);
     m_shapeIcon.setOutlineThickness(2);
     m_shapeIcon.setOutlineColor(sf::Color::Red);
-    m_shapeIcon.setOrigin(10,10);
+    m_shapeIcon.setOrigin(UNIT_RADIUS,UNIT_RADIUS);
     m_selectShape = sf::VertexArray(sf::LinesStrip, 5);
     for(unsigned int i=0; i<5; i++)
     {
@@ -60,9 +60,11 @@ void Selection::endSelect(float x, float y)
 Selection Selection::operator=(const Selection& other)
 {
     m_selection.clear();
+    m_size = 0;
     for(std::list<Unit*>::const_iterator it=other.m_selection.begin(); it!=other.m_selection.end(); it++)
     {
         m_selection.push_back((*it));
+        m_size ++;
     }
 
     return *this;
