@@ -17,21 +17,33 @@ class Unit : public Vehicule
         virtual void update(const float& frameTime, QuadTree& qTree);
         virtual void update(const float& frameTime, std::list<Unit*>& others);
 
+        virtual void draw(sf::RenderTarget& App);
+
         void go(Vector dest);
+
+        virtual void setPath(std::list<Vector> pathWay, bool loop = false, float width=1);
+
         void idle();
 
         bool clicked(float x, float y);
         bool intersect(const sf::FloatRect& rect);
 
+        void trace(bool trace = true);
+
         enum Command
         {
             GO,
+            FOLLOW,
             IDLE
         };
 
     protected:
         std::list<Command> m_commands;
         Vector m_target;
+
+        bool m_trace;
+        sf::Clock m_traceClock;
+        sf::VertexArray m_traceArray;
 };
 
 #endif // UNIT_H

@@ -44,6 +44,8 @@
 		<Linker>
 			<Add directory="D:/Programmation/SFML-2.1/lib" />
 		</Linker>
+		<Unit filename="QuadTree.cpp" />
+		<Unit filename="QuadTree.hpp" />
 		<Unit filename="README.md" />
 		<Unit filename="Selection.cpp" />
 		<Unit filename="Selection.hpp" />
@@ -53,6 +55,7 @@
 		<Unit filename="Vector.hpp" />
 		<Unit filename="Vehicule.cpp" />
 		<Unit filename="Vehicule.hpp" />
+		<Unit filename="defines.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

@@ -5,18 +5,19 @@
 #include "Vector.hpp"
 
 #include <vector>
+#include <list>
 
 /// parametre des behaviors ///
 #define MAX_SPEED 100.f
 #define MAX_FORCE 250.f
-#define DEFAULT_MASS 5.f
+#define DEFAULT_MASS 100.f
 #define SLOW_DIST_FACTOR 2.5f // SLOW_DiST = SLOW_DIST_FACTOR * MAX_SPEED * DEFAULT_MASS
 #define APPROX_ARRIVAL 1.f
 
 #define RADIUS UNIT_RADIUS
 #define AHEAD_CHECK (30.f*MAX_SPEED)
 
-#define UCATIME 2
+#define UCATIME 3
 
 class Vehicule
 {
@@ -79,6 +80,9 @@ class Vehicule
         Vector unallignedCollisionAvoidance(std::vector<Vehicule*>& others);
         Vector unallignedCollisionAvoidance(std::vector<Vehicule>& others);
 
+        //virtual void setPath(std::list<Vector> pathWay, bool loop = false, float width=1);
+        Vector followPath();
+
     protected:
         /// Attributs physiques
         Vector m_position;
@@ -98,6 +102,11 @@ class Vehicule
 
         /// Attribut graphique
         sf::ConvexShape m_drawing;
+
+        std::list<Vector> m_pathWay;
+        bool m_loopPath;
+        float m_pathWidth;
+        std::list<Vector>::iterator m_pathIterator;
 };
 
 #endif // UNIT_HPP

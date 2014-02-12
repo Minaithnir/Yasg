@@ -8,7 +8,7 @@
 
 #define WIDTH 1280
 #define HEIGHT 696
-#define DEMO_UNIT_COUNT 500
+#define DEMO_UNIT_COUNT 100
 
 #define SCROLL_RANGE 50
 #define SCROLL_SPEED 200
@@ -16,6 +16,7 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Yet another strategy game");
+    window.setKeyRepeatEnabled(false);
     bool pause = false;
 
     std::vector<Unit> units;
@@ -31,6 +32,8 @@ int main()
     sf::View camera(sf::FloatRect((int) -(window.getSize().x/2), (int) -(window.getSize().y/2),window.getSize().x, window.getSize().y));
 
     Selection group[10];
+
+    std::list<Vector> path;
 
     sf::Clock clock;
     float frameTime;
@@ -63,8 +66,16 @@ int main()
                     select.startSelect(wPos.x, wPos.y);
                     break;
                 case sf::Mouse::Right :
-                    wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    select.giveDest(Vector(wPos.x, wPos.y), 3.5*UNIT_RADIUS);
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+                    {
+                        wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                        path.push_back(wPos);
+                    }
+                    else
+                    {
+                        wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                        select.giveDest(Vector(wPos.x, wPos.y), 3*UNIT_RADIUS);
+                    }
                     break;
                 default :
                     break;
@@ -84,12 +95,21 @@ int main()
             case sf::Event::KeyPressed :
                 switch(event.key.code)
                 {
+                case sf::Keyboard::LShift :
+                    path.clear();
+                    break;
                 case sf::Keyboard::R :
                     for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
                     {
                         units[i].setPosition(Vector(rand()%WIDTH - WIDTH/2, rand()%HEIGHT - HEIGHT/2));
                         units[i].idle();
                     }
+                    break;
+                case sf::Keyboard::T :
+                    if(event.key.shift)
+                        select.trace(false);
+                    else
+                        select.trace(true);
                     break;
                 case sf::Keyboard::Num0 :
                     if(event.key.control)
@@ -155,6 +175,19 @@ int main()
                     break;
                 }
                 break;
+            case sf::Event::KeyReleased :
+                switch(event.key.code)
+                {
+                case sf::Keyboard::LShift :
+                    if(event.key.alt)
+                        select.givePath(path, false, 70, 3*UNIT_RADIUS);
+                    else
+                        select.givePath(path, true, 70);
+                    break;
+                default :
+                    break;
+                }
+                break;
             default :
                 break;
             }
@@ -170,12 +203,12 @@ int main()
             sf::Vector2f newPos = camera.getCenter();
             if(localPosition.x < SCROLL_RANGE)
                 newPos.x -= SCROLL_SPEED*frameTime;
-            else if(localPosition.x > (window.getSize().x)-SCROLL_RANGE)
+            else if(localPosition.x > (int) (window.getSize().x)-SCROLL_RANGE)
                 newPos.x += SCROLL_SPEED*frameTime;
 
             if(localPosition.y < SCROLL_RANGE)
                 newPos.y -= SCROLL_SPEED*frameTime;
-            else if(localPosition.y > (window.getSize().y)-SCROLL_RANGE)
+            else if(localPosition.y > (int) (window.getSize().y)-SCROLL_RANGE)
                 newPos.y += SCROLL_SPEED*frameTime;
 
             camera.setCenter(newPos);
@@ -200,7 +233,6 @@ int main()
         window.clear(sf::Color::White);
         window.setView(camera);
 
-        qTree.display(window);
         select.draw(window);
 
         for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)

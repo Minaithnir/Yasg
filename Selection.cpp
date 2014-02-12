@@ -1,5 +1,7 @@
 #include "Selection.hpp"
 
+#include <iostream>
+
 Selection::Selection() : m_select(NULL)
 {
     m_shapeIcon = sf::CircleShape(UNIT_RADIUS,16);
@@ -89,6 +91,14 @@ void Selection::draw(sf::RenderWindow& screen)
     }
 }
 
+void Selection::trace(bool trace)
+{
+    for(std::list<Unit*>::iterator it=m_selection.begin(); it!=m_selection.end(); it++)
+    {
+        (*it)->trace(trace);
+    }
+}
+
 void Selection::giveDest(Vector dest, float offset)
 {
     int side = sqrt(m_size);
@@ -112,5 +122,39 @@ void Selection::giveDest(Vector dest, float offset)
             counter = 0;
         }
 
+    }
+}
+
+void Selection::givePath(std::list<Vector> path, bool loop, float width, float offset)
+{
+    if(path.empty())
+        return;
+
+    int side = sqrt(m_size);
+    side = side*side < m_size ? side+1 : side;
+    Vector fDest = path.back();
+    Vector actualDest;
+    actualDest.x = fDest.x - (side*offset)/2;
+    actualDest.y = fDest.y - (side*offset)/2;
+
+    int counter=0;
+
+    for(std::list<Unit*>::iterator it=m_selection.begin(); it!=m_selection.end(); it++)
+    {
+        if(!loop)
+        {
+            path.pop_back();
+            path.push_back(actualDest);
+            counter++;
+            if(counter<side)
+                actualDest.x += offset;
+            else
+            {
+                actualDest.x = fDest.x - (side*offset)/2;
+                actualDest.y += offset;
+                counter = 0;
+            }
+        }
+        (*it)->setPath(path, loop, width);
     }
 }

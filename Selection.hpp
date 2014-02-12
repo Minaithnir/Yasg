@@ -17,7 +17,10 @@ class Selection
 
         void draw(sf::RenderWindow& screen);
 
-        void giveDest(Vector dest, float offset=15);
+        void trace(bool trace);
+
+        void giveDest(Vector dest, float offset=20);
+        void givePath(std::list<Vector> path, bool loop=false, float width=50, float offset=20);
 
         Selection operator=(const Selection& other);
 

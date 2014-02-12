@@ -13,8 +13,8 @@ Vehicule::Vehicule() :
     m_waypointIndex(0)
 {
     m_drawing.setPointCount(3);
-    m_drawing.setPoint(0, sf::Vector2f(-(RADIUS/2),(RADIUS/2)));
-    m_drawing.setPoint(1, sf::Vector2f(-(RADIUS/2),-(RADIUS/2)));
+    m_drawing.setPoint(0, sf::Vector2f(-(RADIUS*0.8),(RADIUS*0.8)));
+    m_drawing.setPoint(1, sf::Vector2f(-(RADIUS*0.8),-(RADIUS*0.8)));
     m_drawing.setPoint(2, sf::Vector2f(RADIUS,0));
     m_drawing.setFillColor(sf::Color::Black);
 }
@@ -43,7 +43,7 @@ void Vehicule::updatePos(const float& frameTime)
 
     m_position += m_velocity;
 
-    m_steering = Vector(0,0);
+    //m_steering = Vector(0,0);
 }
 
 /**
@@ -194,9 +194,9 @@ Vector Vehicule::unallignedCollisionAvoidance(std::vector<Vehicule*>& others)
             if(Vector(others[i]->getPosition()-m_position).norme() < 5*m_radius)
             {
                 Vector futurDiff(others[i]->getFuturePosition(UCATIME) - getFuturePosition(UCATIME));
-                if(futurDiff.norme() < 1.5*m_radius)
+                if(futurDiff.norme() < m_radius+others[i]->m_radius)
                 {
-                    if(futurDiff.norme()>m_radius)
+                    if(futurDiff.norme()>m_radius+others[i]->m_radius/2)
                         futurDiff.setLengh(futurDiff.norme()-m_radius);
                     steering -= futurDiff;
                 }
@@ -219,4 +219,48 @@ Vector Vehicule::unallignedCollisionAvoidance(std::vector<Vehicule>& others)
     }
 
     return unallignedCollisionAvoidance(unitsPtr);
+}
+
+/*
+void Vehicule::setPath(std::list<Vector> pathWay, bool loop, float width)
+{
+    m_pathWay = pathWay;
+    m_loopPath = loop;
+    m_pathWidth = width;
+    m_pathIterator = m_pathWay.begin();
+}
+*/
+
+Vector Vehicule::followPath()
+{
+    Vector steering;
+
+    if(m_loopPath)
+    {
+        if(Vector(m_position.x-m_pathIterator->x, m_position.y-m_pathIterator->y).norme() < m_pathWidth)
+        {
+            m_pathIterator++;
+            if(m_pathIterator==m_pathWay.end())
+            {
+                m_pathIterator = m_pathWay.begin();
+            }
+        }
+    }
+    else
+    {
+        if(m_pathWay.empty())
+            return Vector(0,0);
+        else
+        {
+            if(Vector(m_position.x-m_pathIterator->x, m_position.y- m_pathIterator->y).norme()<m_pathWidth)
+            {
+                m_pathWay.pop_front();
+                if(m_pathWay.empty())
+                    return Vector(0,0);
+                m_pathIterator = m_pathWay.begin();
+            }
+        }
+    }
+
+    return seek(*m_pathIterator);
 }
