@@ -15,9 +15,10 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Yet another strategy game");
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Yet another strategy game", sf::Style::Titlebar | sf::Style::Close);
     window.setKeyRepeatEnabled(false);
     bool pause = false;
+    bool fullscreen = false;
 
     std::vector<Unit> units;
     QuadTree qTree(sf::FloatRect(-2000,-2000,4000,4000));
@@ -34,6 +35,7 @@ int main()
     Selection group[10];
 
     std::list<Vector> path;
+    sf::VertexArray pathView(sf::LinesStrip);
 
     sf::Clock clock;
     float frameTime;
@@ -70,6 +72,8 @@ int main()
                     {
                         wPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                         path.push_back(wPos);
+                        sf::Vertex v(wPos, sf::Color::Blue);
+                        pathView.append(v);
                     }
                     else
                     {
@@ -95,8 +99,33 @@ int main()
             case sf::Event::KeyPressed :
                 switch(event.key.code)
                 {
+                case sf::Keyboard::F4 :
+                    if(event.key.alt)
+                        window.close();
+                    break;
+                case sf::Keyboard::Return :
+                    if(event.key.alt)
+                    {
+                        if(fullscreen)
+                        {
+                            fullscreen = false;
+                            window.create(sf::VideoMode(window.getSize().x, window.getSize().y), "Yet another strategy game", sf::Style::Titlebar | sf::Style::Close);
+                            window.setKeyRepeatEnabled(false);
+                        }
+                        else
+                        {
+                            fullscreen = true;
+                            window.create(sf::VideoMode(window.getSize().x, window.getSize().y), "Yet another strategy game", sf::Style::Fullscreen);
+                            window.setKeyRepeatEnabled(false);
+                        }
+                    }
+                    break;
                 case sf::Keyboard::LShift :
                     path.clear();
+                    pathView.clear();
+                    break;
+                case sf::Keyboard::W :
+                    select.giveFreedom();
                     break;
                 case sf::Keyboard::R :
                     for(unsigned int i=0; i<DEMO_UNIT_COUNT; i++)
@@ -110,6 +139,17 @@ int main()
                         select.trace(false);
                     else
                         select.trace(true);
+                    break;
+                case sf::Keyboard::A :
+                    if(event.key.control)
+                    {
+                        std::list<Unit*> all;
+                        for(std::vector<Unit>::iterator it=units.begin(); it!=units.end(); it++)
+                        {
+                            all.push_back(&(*it));
+                        }
+                        select.setSelection(all);
+                    }
                     break;
                 case sf::Keyboard::Num0 :
                     if(event.key.control)
@@ -232,6 +272,9 @@ int main()
 
         window.clear(sf::Color::White);
         window.setView(camera);
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+            window.draw(pathView);
 
         select.draw(window);
 

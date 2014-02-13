@@ -20,10 +20,9 @@ class Unit : public Vehicule
         virtual void draw(sf::RenderTarget& App);
 
         void go(Vector dest);
-
         virtual void setPath(std::list<Vector> pathWay, bool loop = false, float width=1);
-
         void idle();
+        void setWander();
 
         bool clicked(float x, float y);
         bool intersect(const sf::FloatRect& rect);
@@ -34,6 +33,7 @@ class Unit : public Vehicule
         {
             GO,
             FOLLOW,
+            WANDER,
             IDLE
         };
 

@@ -10,6 +10,7 @@ class Selection
         virtual ~Selection();
 
         void setSelectable(std::vector<Unit>* selectPtr);
+        void setSelection(std::list<Unit*> selection);
         std::list<Unit*> getSelection();
 
         void startSelect(float x, float y);
@@ -21,6 +22,7 @@ class Selection
 
         void giveDest(Vector dest, float offset=20);
         void givePath(std::list<Vector> path, bool loop=false, float width=50, float offset=20);
+        void giveFreedom();
 
         Selection operator=(const Selection& other);
 

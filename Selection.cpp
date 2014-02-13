@@ -24,6 +24,17 @@ void Selection::setSelectable(std::vector<Unit>* selectPtr)
     m_selectableUnit = selectPtr;
 }
 
+void Selection::setSelection(std::list<Unit*> selection)
+{
+    m_selection.clear();
+    m_size = 0;
+    for(std::list<Unit*>::const_iterator it=selection.begin(); it!=selection.end(); it++)
+    {
+        m_selection.push_back((*it));
+        m_size ++;
+    }
+}
+
 std::list<Unit*> Selection::getSelection()
 {
     return m_selection;
@@ -156,5 +167,13 @@ void Selection::givePath(std::list<Vector> path, bool loop, float width, float o
             }
         }
         (*it)->setPath(path, loop, width);
+    }
+}
+
+void Selection::giveFreedom()
+{
+    for(std::list<Unit*>::iterator it=m_selection.begin(); it!=m_selection.end(); it++)
+    {
+        (*it)->setWander();
     }
 }

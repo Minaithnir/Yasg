@@ -76,9 +76,16 @@ void Unit::update(const float& frameTime, std::list<Unit*>& others)
                     m_commands.pop_front();
                 }
                 break;
+            case WANDER :
+                m_steering = wander();
+                break;
             default:
                 break;
             }
+        }
+        else
+        {
+            m_commands.push_back(IDLE);
         }
     }
     else
@@ -113,6 +120,12 @@ void Unit::idle()
 {
     m_commands.clear();
     m_commands.push_back(IDLE);
+}
+
+void Unit::setWander()
+{
+    m_commands.clear();
+    m_commands.push_front(WANDER);
 }
 
 bool Unit::clicked(float x, float y)
@@ -155,7 +168,7 @@ void Unit::draw(sf::RenderTarget& App)
 
         App.draw(lines);
 
-        if(m_traceClock.getElapsedTime().asSeconds()>.5f)
+        if(m_traceClock.getElapsedTime().asSeconds()>.0f)
         {
             sf::Vertex vertex(m_position, sf::Color::Red);
             m_traceArray.append(vertex);

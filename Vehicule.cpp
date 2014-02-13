@@ -42,8 +42,6 @@ void Vehicule::updatePos(const float& frameTime)
     m_velocity.truncate(m_maxSpeed*frameTime);
 
     m_position += m_velocity;
-
-    //m_steering = Vector(0,0);
 }
 
 /**
@@ -75,8 +73,8 @@ Vector Vehicule::getFuturePosition(const float& futureTime)
 Vector Vehicule::wander()
 {
     Vector centre = m_velocity;
-    centre.normalize();
-    centre.setLengh(3*m_maxForce);/// on défini le centre du cercle
+    if(centre != Vector(0,0))
+        centre.setLengh(3*m_maxForce);/// on défini le centre du cercle
 
     Vector random((rand()%101)-50, (rand()%101)-50);
     random.truncate(m_maxForce); /// on crée une force aléatoire;
@@ -220,16 +218,6 @@ Vector Vehicule::unallignedCollisionAvoidance(std::vector<Vehicule>& others)
 
     return unallignedCollisionAvoidance(unitsPtr);
 }
-
-/*
-void Vehicule::setPath(std::list<Vector> pathWay, bool loop, float width)
-{
-    m_pathWay = pathWay;
-    m_loopPath = loop;
-    m_pathWidth = width;
-    m_pathIterator = m_pathWay.begin();
-}
-*/
 
 Vector Vehicule::followPath()
 {

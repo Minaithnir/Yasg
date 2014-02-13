@@ -10,7 +10,7 @@
 /// parametre des behaviors ///
 #define MAX_SPEED 100.f
 #define MAX_FORCE 250.f
-#define DEFAULT_MASS 100.f
+#define DEFAULT_MASS 50.f
 #define SLOW_DIST_FACTOR 2.5f // SLOW_DiST = SLOW_DIST_FACTOR * MAX_SPEED * DEFAULT_MASS
 #define APPROX_ARRIVAL 1.f
 
